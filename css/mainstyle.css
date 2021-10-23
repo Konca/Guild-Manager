@@ -1,0 +1,298 @@
+body{
+	background-color: #000000;
+}
+h1, h2{
+	color: #FFFFFF;
+	text-align: center;
+}
+#discord-login{
+	width: 260px;
+	background-color: #7289d9;
+	border: 2px solid #0c40f3;
+	border-radius: 25px;
+	color: #FFFFFF;
+	text-align: center;
+	margin: 0 10px;
+	font-weight: bold;
+	text-shadow: 1px 1px #0c40f3
+	box-shadow: 5px 5px #FFFFFF;
+}
+
+nav>div a, nav li .nav-link{
+	color: #FFFFFF ;
+}
+.modal-content, #btnCloseModal, .close{
+	background-color: #3f3f3f;
+	color: #FFFFFF ;
+	border-width: 2px;
+	border-color: #FFFFFF;
+}
+
+.drop-placeholder {
+background-color: lightgray;
+height: 3.5em;
+padding-top: 12px;
+padding-bottom: 12px;
+line-height: 1.2em;
+}
+
+.close{
+	padding: 0;
+	height: 30px;
+	line-height: 30px;
+	width: 30px;
+	border: none;
+	font-size: 30px;
+}
+
+form > div{
+	color: #FFFFFF;
+	display: inline-block;
+	float: left;
+	background-color: #3f3f3f;
+	border: 2px solid #000000;
+	height: 190px;
+	overflow: hidden;
+	margin: 0 auto;
+	padding: 5px 10px 0 10px;
+	border-width: 0px;
+}
+form > div.row{
+	height: 50px
+}
+form hr{
+	margin: 20px auto;
+}
+#csvTextInputArea{
+	resize: none;
+	font-size: 14px;
+}
+#csvFileInputAreaDiv{
+	height: 100px;
+}
+.raidNumbersDiv{
+	display: inline-block;
+	height: 50px;
+}
+#raidTeams, #classPicker, #raidTitle{
+	background-color: #3f3f3f;
+	color: #FFFFFF;
+	clear: both;
+	min-height: 200px;
+	margin: 20px auto;
+
+}
+
+#raidTeams ul, #classPicker ul{
+	float: center;
+	background-color: #00000070;
+	margin: 20px auto;
+	font-weight: bold;
+	max-width: 300px;
+}
+lh{
+	position: relative;
+	text-align: center;
+	padding: 0 0 8px 0;
+
+}
+lh>span{
+	position: absolute;
+	margin: -6px 2px;
+	width: 20px;
+	font-size: 0.8em;
+	right: 0;
+	border: 2px solid #FFFFFF;
+}
+lh>p{
+	display: inline;
+}
+li>span {
+    vertical-align:middle;
+    display:inline-block;
+    background-size: 30px;
+  	width: 30px;
+  	height:30px;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  position: relative;
+  right: 15px;
+  transform: rotate(90deg);
+  height: 45px;
+}
+input[type="number"]::-webkit-number-input{
+	font-size: 2px;
+}
+#description-link{
+	text-decoration: none;
+}
+.hideThis{
+	display: none;
+}
+
+/*SPEC ICON PICKER*/
+
+li.druid.balance>span{
+	background-image: url("../images/Wow-Icons/images/spec/druid/balance.png") ;
+}
+li.druid.feral>span{
+	background-image: url("../images/Wow-Icons/images/spec/druid/feral.png") ;
+}
+li.druid.guardian>span{
+	background-image: url("../images/Wow-Icons/images/spec/druid/guardian.png") ;
+}
+li.druid.restoration>span{
+	background-image: url("../images/Wow-Icons/images/spec/druid/restoration.png") ;
+}
+li.hunter.beastmastery>span{
+	background-image: url("../images/Wow-Icons/images/spec/hunter/beastmastery.png") ;
+}
+li.hunter.marksman>span{
+	background-image: url("../images/Wow-Icons/images/spec/hunter/marksman.png") ;
+}
+li.hunter.survival>span{
+	background-image: url("../images/Wow-Icons/images/spec/hunter/survival.png") ;
+}
+li.mage.arcane>span{
+	background-image: url("../images/Wow-Icons/images/spec/mage/arcane.png") ;
+}
+li.mage.fire>span{
+	background-image: url("../images/Wow-Icons/images/spec/mage/fire.png") ;
+}
+li.mage.frost>span{
+	background-image: url("../images/Wow-Icons/images/spec/mage/frost.png") ;
+}
+li.paladin.holy>span{
+	background-image: url("../images/Wow-Icons/images/spec/paladin/holy.png") ;
+}
+li.paladin.protection>span{
+	background-image: url("../images/Wow-Icons/images/spec/paladin/protection.png") ;
+}
+li.paladin.retribution>span{
+	background-image: url("../images/Wow-Icons/images/spec/paladin/retribution.png") ;
+}
+li.priest.discipline>span{
+	background-image: url("../images/Wow-Icons/images/spec/priest/discipline.png") ;
+}
+li.priest.holy>span{
+	background-image: url("../images/Wow-Icons/images/spec/priest/holy.png") ;
+}
+li.priest.shadow>span{
+	background-image: url("../images/Wow-Icons/images/spec/priest/shadow.png") ;
+}
+li.rogue.assassination>span{
+	background-image: url("../images/Wow-Icons/images/spec/rogue/assassination.png") ;
+}
+li.rogue.combat>span{
+	background-image: url("../images/Wow-Icons/images/spec/rogue/combat.png") ;
+}
+li.rogue.subtlety>span{
+	background-image: url("../images/Wow-Icons/images/spec/rogue/subtlety.png") ;
+}
+li.shaman.elemental>span{
+	background-image: url("../images/Wow-Icons/images/spec/shaman/elemental.png") ;
+}
+li.shaman.enhancement>span{
+	background-image: url("../images/Wow-Icons/images/spec/shaman/enhancement.png") ;
+}
+li.shaman.restoration>span{
+	background-image: url("../images/Wow-Icons/images/spec/shaman/restoration.png") ;
+}
+li.warlock.affliction>span{
+	background-image: url("../images/Wow-Icons/images/spec/warlock/affliction.png") ;
+}
+li.warlock.demonology>span{
+	background-image: url("../images/Wow-Icons/images/spec/warlock/demonology.png") ;
+}
+li.warlock.destruction>span{
+	background-image: url("../images/Wow-Icons/images/spec/warlock/destruction.png") ;
+}
+li.warrior.arms>span{
+	background-image: url("../images/Wow-Icons/images/spec/warrior/arms.png") ;
+}
+li.warrior.fury>span{
+	background-image: url("../images/Wow-Icons/images/spec/warrior/fury.png") ;
+}
+li.warrior.protection>span{
+	background-image: url("../images/Wow-Icons/images/spec/warrior/protection.png") ;
+}
+
+/*CLASS COLOR PICKER*/
+main li{
+	white-space:nowrap;
+	overflow: hidden;
+}
+li.druid{
+	background-color: #FF7C0A;
+}
+li.hunter{
+	background-color: #AAD372;
+}
+li.mage{
+	background-color: #3FC7EB;
+}
+li.paladin{
+	background-color: #F48CBA;
+}
+li.priest{
+	background-color: #FFFFFF;
+}
+li.rogue{
+	background-color: #FFF468;
+}
+li.shaman{
+	background-color: #0070DD;
+}
+li.warlock{
+	background-color: #8788EE;
+}
+li.warrior{
+	background-color: #C69B6D;
+}
+
+.sortable-placeholder{
+	background-color:#FFFFFF ;
+	color: #000000;
+	opacity: 0.3;
+	height: 48px;
+	line-height: 48px;
+}
+
+footer, header nav{
+	background-color: #3f3f3f;
+	color: #FFFFFF;
+	clear: both;
+}
+
+@media only screen and (max-width: 768px){
+	#raidTeams, #classPicker{
+			max-height: 	90vh;
+			overflow-y: 	scroll	;
+
+	}
+	#raidTeams ul, #classPicker ul{
+	max-width: 200px;
+}
+.row{
+	margin: 0;
+	padding: 0;
+}
+
+li>span {
+    background-size: 20px;
+  	width: 20px;
+  	height:20px;
+}
+.list-group-item{
+	padding: 5px 0;
+}
+.sortable-placeholder{
+	height: 36px;
+	line-height: 36px;
+}
+form > div.row{
+	height: 60px
+}
+}

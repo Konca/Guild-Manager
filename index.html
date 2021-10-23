@@ -5,30 +5,31 @@
 	<title>Guild Manager</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-	<link rel="stylesheet" href="css/mainstyle.css">
+	<script src="https://kit.fontawesome.com/81b503dbd8.js" crossorigin="anonymous"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js" integrity="sha256-hlKLmzaRlE8SCJC1Kw8zoUbU8BxA+8kR3gseuKfMjxA=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="css/mainstyle.css">
 </head>
 <body>
   <header>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-  	<a class="navbar-brand active" href="index.html" aria-current="page">Guild Manager</a>
+  	<!--navbar start-->
+<nav class="navbar navbar-expand-md navbar-dark">
+  <div class="container">
+  	<a class="navbar-brand active" href="index.html" aria-current="page">Guild Manager <i class="fas fa-home"></i></span></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-	 	<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+	 	<ul class="navbar-nav me-auto mb-2 mb-md-0">
   			<li class="nav-item">
-     			<a class="nav-link" href="about_dev.html">About The Developer</a>
+    		<li><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#importModal">Raid Builder</a></li>
   			</li>
-  			<li class="nav-item dropdown">
-   				<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Your Move</a>
-    			<ul class="dropdown-menu">
-     				<li><a class="dropdown-item" href="your_move_main.html">Game Info</a></li>
-     				<li><hr class="dropdown-divider"></li>
-      				<li><a class="dropdown-item" href="ym_humans.html">Humans</a></li>
-      				<li><a class="dropdown-item" href="ym_spiders.html">Spiders</a></li>
-    			</ul>
+  			<li class="nav-item">
+     			<a class="nav-link" href="#">Crafting</a>
+  			</li>
+  			<li class="nav-item">
+    			<a class="nav-link" href="#">Guild Roster</a>
   			</li>
   			<li class="nav-item">
     			<a class="nav-link" href="#footy">Contact info</a>
@@ -36,10 +37,140 @@
 		</ul>
     </div>
   </div>
+  <a id="discord-login" class="nav-link" href="login.html" ><i class="fab fa-discord"></i> Log in with Discord</i></a>
 </nav>
-	<h1 class="display-1">Guild Manager</h1>
-	</header>
+	<!--navbar end-->
+	
+</header>
+<main>
+  <div id="main-content" class="container"></div> 
+  <div class="container-fluid row">
+  <section class="row col-6 col-md-12  justify-content-center hideThis order-2 order-md-1" id="raidTeams">
+     <div class="col-sm-12 col-md hideThis" id="Raid1">
+      <ul  class="list-group droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
+        <lh><p>Raid 1</p> <span>0</span></lh>
+      </ul>
+      </div>
+      <div class="col-12 col-md hideThis"id="Raid2">
+      <ul  class="list-group droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
+        <lh><p>Raid 2</p> <span>0</span></lh>
+      </ul>
+      </div>
+      <div class="col-sm-12 col-md hideThis"id="Raid3">
+      <ul  class="list-group droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
+        <lh><p>Raid 3</p> <span>0</span></lh>
+      </ul>
+      </div>
+      <div class="col-sm-12 col-md hideThis"id="Raid4">
+      <ul  class="list-group grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
+        <lh><p>Raid 4</p> <span>0</span></lh>
+      </ul>
+      </div>
+      <div class="col-sm-12 col-md hideThis"id="Raid5">
+      <ul  class="list-group dropfalse grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
+        <lh><p>Raid 5</p><span>0</span></lh>
+      </ul>
+    </div>
+  </section>
+ 
+<section class="row col-6 col-md-12 justify-content-center hideThis order-1 order-md-2" id="classPicker">
+    <div class="col-sm-12 col-md-3">
+      <ul class="list-group droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-import" id="Tank">
+        <lh>Tanks</lh>
+        <li class="list-group-item Tank Warrior Protection" data-toggle="tooltip" data-html="true" title="<em>{{Tooltip}}</em>" id="{{ID}}" ><span onclick="$dc.reSpec();">fefe</span>{{PlayerName}}</li>
+        <li class="list-group-item Tank Warrior Protection" data-toggle="tooltip" data-html="true" title="<em>{{Tooltip}}</em>" id="{{ID}}" ><span onclick="$dc.reSpec();">fafa</span>{{PlayerName}}</li>
+      </ul>
+    </div>
+    <div class="col-sm-12 col-md-3">
+      <ul class="list-group droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-import"id="Healer">
+        <lh>Healers</lh>
+      </ul>
+    </div>
+    <div class="col-sm-12 col-md-3">
+      <ul class="list-group droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-import"id="Melee-DPS">
+        <lh>Melee-DPS</lh>
+      </ul>
+    </div>
+    <div class="col-sm-12 col-md-3">
+      <ul class="list-group droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-import" id="Ranged-DPS">
+        <lh>Ranged-DPS</lh>
+      </ul>
+    </div>
+  </section>
+</div>
+  <!--Modal-->
+<div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModal" aria-hidden="true">
+  <div class="modal-dialog" >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="importModalLabel">Import your Raid Helper Event</h4>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+    <form>
+      <div class="form-group col-12">
+        <label for="csvTextInputArea">Paste in your Raid Helper CSV text here:</label>
+        <textarea class="form-control form-control-lg" id="csvTextInputArea" rows="6"></textarea>
+      </div>
+      <div id="csvFileInputAreaDiv" class="form-group col-12">
+        <label for="csvFileInputArea">Or upload the CSV file:</label>
+        <input type="file" class="form-control-file" id="csvFileInputArea" accept = ".csv" onchange="$dc.readFileInput();">
+      <hr class="d-sm-block"> 
+      </div>
+      <div class="row col-12">
+      <div class="form-group col-7 raidNumbersDiv">
+        <label for="numberOfRaids">Number of Raids:</label>
+        <input type="number" value="2" min="1" max="10" step="1" id="numberOfRaids" /><br>
+      </div>
+      <div  class="form-group col-5 raidNumbersDiv">
+        <label for="numberOfRaiders">Raid Size:</label>
+        <input type="number" value="25" min="10" max="40" step="15" id="numberOfRaiders" /><br>
+      </div>
+      </div>     
+  </form>
+      </div><!--/ModalBody-->
+      <div class="modal-footer"/>
+        <button type="button" class="btn btn-default" id="btnCloseModal" data-bs-dismiss="modal">Close</button>
+        <button type="button" disabled class="btn btn-primary" data-bs-dismiss="modal" id="modalSubmitButton"onclick="$dc.openRaid();" >Import</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+<!--FOOTER-->
+<footer id="footy" class="panel-footer">
+    <div class="container">
+      <div class="row">
+        <section id="contact" class="col-md-4 col-sm-12">
+          <span>Email:</span><br>
+          ivan.koncani@gmail.com<br>
+          <hr class=" d-sm-block d-md-none">
+        </section>
+        <section class="col-md-4 col-sm-12">
+          <span>Some text:</span><br>
+          More Text<br>
+          Yaay text!
+           <hr class=" d-sm-block d-md-none">
+        </section>
+        <section  class="col-md-4 col-sm-12">
+          <p>Much wow many help</p>
+          <p>OMGGGGGGG</p>
+           <hr class=" d-sm-block d-md-none">
+        </section>
+      </div>
+      <div class="text-center">&copy; Copyright Ivan Koncani 2021</div>
+    </div>
+  </footer>
+
+  <!--Bootstrap and JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script>$('#widget').draggable();</script>
+<script src="js/ajax-utils.js"></script>
+<script src="js/script.js"></script>
+
 </body>
 
 </html>
