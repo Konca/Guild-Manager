@@ -15,8 +15,7 @@ var homeHtml = "snippets/homepage-snip.html";
 var raidHtml = "snippets/raidbuilder-snip.html";
 var raidLiHtml = "snippets/playerList-snip.html";
 var raidObj,raidInfoObj,numOfRaids;
-var deleteThis=[],dataToSave={};
-dataToSave.table=[];
+var deleteThis=[];
 var categoriesTitleHtml = "snippets/categories-title-snippet.html";
 var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 var showLoading = function (selector) {
@@ -93,7 +92,7 @@ function readFile(input) {
 };
 
 dc.saveRaid=function(){
-gatherDataToSave();
+saveRaidToFile();
 
 }
 //opening raid view once submit was clicked on Raid Builder
@@ -157,8 +156,8 @@ function buildAndShowRaidItemsHTML (raid, raidInfo,roleView) {
 };
 
 function buildRaidsTitleHtml(raidInfo,raidHtml) {
-
   raidHtml = insertProperty(raidHtml, "Title", raidInfo.Name);
+  raidHtml = insertProperty(raidHtml, "ID", raidInfo.Link.split("/")[6]);
   raidHtml = insertProperty(raidHtml, "Description", linkify(raidInfo.Description));
   raidHtml = insertProperty(raidHtml, "Date", raidInfo.Date);
   raidHtml = insertProperty(raidHtml, "Time", raidInfo.Time);
@@ -298,19 +297,13 @@ function csvJSON(csv){
   return JSON.stringify(result); //JSON
 }
 
-//Get all needed data to save in JSON
-function gatherDataToSave(){
- var titleItems={}, raidTeams={};
-  titleItems={"Name": document.querySelector("#raidTitle>h3").innerHTML,
-              "Description":document.querySelector("#raidTitle>p:nth-of-type(1n)").innerHTML,
-              "Date":document.querySelector("#raidTitle>p:nth-of-type(2n)").innerHTML.split("&nbsp;")[1],
-              "Time":document.querySelector("#raidTitle>p:nth-of-type(2n)").innerHTML.split("&nbsp;")[3]
-              };
+//Get all needed data and save in JSON
+function saveRaidToFile(){
+ var finalJson={}, raidTeams={},bench={};
   for(var i=0; i<document.querySelectorAll("#raidTeams>div.unhideThis").length;i++){
-    var idForSel=TeamName=document.querySelectorAll("#raidTeams>div.unhideThis")[i].id;
+    var idForSel=document.querySelectorAll("#raidTeams>div.unhideThis")[i].id;
     var comp={};
     for(var j=0; j<document.querySelectorAll("#"+idForSel+">ul>li").length;j++){
-      console.log(document.querySelectorAll("#"+idForSel+">ul>li")[j].classList);
         comp[j]={"Role": document.querySelectorAll("#"+idForSel+">ul>li")[j].classList[1],
                  "Class":document.querySelectorAll("#"+idForSel+">ul>li")[j].classList[2],
                  "Spec":document.querySelectorAll("#"+idForSel+">ul>li")[j].classList[3],
@@ -322,10 +315,49 @@ function gatherDataToSave(){
               "TeamComp":comp};
        
   };
-    
-  console.log(raidTeams);
+   for(var i=0; i<document.querySelectorAll("#classPicker>div.unhideThis").length;i++){
+    var idForSel=document.querySelectorAll("#classPicker>div.unhideThis>ul")[i].id;
+    for(var j=0; j<document.querySelectorAll("#"+idForSel+">li").length;j++){
+        bench[Object.keys(bench).length]={"Role": document.querySelectorAll("#"+idForSel+">li")[j].classList[1],
+                 "Class":document.querySelectorAll("#"+idForSel+">li")[j].classList[2],
+                 "Spec":document.querySelectorAll("#"+idForSel+">li")[j].classList[3],
+                 "Name":document.querySelectorAll("#"+idForSel+">li")[j].innerText,
+                 "ID":document.querySelectorAll("#"+idForSel+">li")[j].id};
+    }
+  };
+  raidTeams[Object.keys(raidTeams).length]={"TeamName":"Benched",
+              "TeamComp":bench};
+    finalJson={"RaidName": document.querySelector("#raidTitle>h3").innerHTML,
+              "RaidID":document.querySelector("#raidTitle>h3").id,
+              "Description":document.querySelector("#raidTitle>p:nth-of-type(1n)").innerHTML,
+              "Date":document.querySelector("#raidTitle>p:nth-of-type(2n)").innerHTML.split("&nbsp;")[1],
+              "Time":document.querySelector("#raidTitle>p:nth-of-type(2n)").innerHTML.split("&nbsp;")[3],
+              "SortedRaids":raidTeams};
+    saveToFile(finalJson,finalJson.RaidID+".json");
+
+$ajaxUtils.sendGetRequest(
+  "../guild-manager/raidHistory/RHO Raid History.json",
+  function (responseText) {
+    var history={}
+  if (responseText!==undefined){
+        history=responseText;
+    }
+  history[Object.keys(history).length]={"Name":finalJson.RaidName,
+                                          "Date":finalJson.Date,
+                                          "ID":finalJson.RaidID};                       
+    saveToFile(history,"RHO Raid History.json")
+    },
+  true);
+
 };
 
+function saveToFile(data,name){
+  var jsonString = JSON.stringify(data);
+  $.post("php/save.php", {
+     jsonString: jsonString,
+     jsonName: name
+  });
+}
 
 global.$dc = dc;
 })(window);
