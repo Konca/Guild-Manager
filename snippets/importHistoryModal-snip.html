@@ -1,0 +1,34 @@
+<div class="modal-dialog" >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" >Raid History</h4>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="historyForm">
+          <div class="form-group col-12">
+            <table class="table ">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Id</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  {{ListItems}}
+                </tr>
+              </tbody>
+            </table>
+          </div>    
+        </form>
+      </div><!--/ModalBody-->
+      <div class="modal-footer"/>
+        <button type="button" class="btn btn-default" id="btnCloseModal" data-bs-dismiss="modal">Close</button>
+        <button type="button" disabled class="btn btn-primary" data-bs-dismiss="modal" id="modalHistorySubmitButton"onclick="$dc.openOldRaid();" >Open</button>
+      </div>
+    </div>
+  </div>

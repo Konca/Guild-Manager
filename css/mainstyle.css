@@ -6,6 +6,7 @@ h1, h2{
 	text-align: center;
 }
 #discord-login{
+	display: none;
 	width: 260px;
 	background-color: #7289d9;
 	border: 2px solid #0c40f3;
@@ -260,12 +261,29 @@ li.warrior{
 	line-height: 48px;
 }
 
-footer, header nav{
+footer, header nav, .dropdown-menu, .dropdown-item{
 	background-color: #3f3f3f;
-	color: #FFFFFF;
+	border-width: 0;
+	color: #a8a8a8;
 	clear: both;
 }
+.dropdown-item:hover, .navbar-dark .navbar-nav .nav-link:hover{
+	color: #FFFFFF;
+	background-color:#3f3f3f ;
+}
 
+/*raidHistoryModal*/
+#historyForm>div{
+	background-color: #e7e7e799;
+	overflow-y: scroll;
+}
+.form-check-input:checked {
+    background-color: #404040;
+    border-color: #cfcfcf;
+
+}
+
+/*media queries*/
 @media only screen and (max-width: 768px){
 	#raidTeams, #classPicker{
 			max-height: 	90vh;

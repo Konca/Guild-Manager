@@ -1,6 +1,7 @@
 // collapse nav button on click
 $(document).ready(function () { 
-  $(document).click(function () {
+  $(document).click(function (event) {
+    if(!Object.values(event.target.classList).includes("dropdown-toggle"))
        $('.navbar-collapse').collapse('hide');
       
   });
@@ -12,9 +13,15 @@ var raidSize;
 var dc = {};
 
 var homeHtml = "snippets/homepage-snip.html";
+var newModalHtml = "snippets/importRaidModal-snip.html"
+var historyModalHtml = "snippets/importHistoryModal-snip.html"
+var historyItemHtml = "snippets/historyItem-snip.html"
 var raidHtml = "snippets/raidbuilder-snip.html";
 var raidLiHtml = "snippets/playerList-snip.html";
+var raidHistoryLink="../raidHistory/RHO Raid History.json"
+var selectedRaidLink="../raidHistory/"
 var raidObj,raidInfoObj,numOfRaids;
+var selectedHistoryButtonId;
 var deleteThis=[];
 var categoriesTitleHtml = "snippets/categories-title-snippet.html";
 var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
@@ -68,7 +75,62 @@ $ajaxUtils.sendGetRequest(
       deleteNodes(".connectedSortable>li");
   },
   false);   
-   });
+});
+
+dc.modalNewRaid=function(){
+  $ajaxUtils.sendGetRequest(
+  newModalHtml,
+  function (responseText) {
+    document.querySelector("#modal-here").innerHTML = responseText;
+  },
+  false);
+};
+dc.modalRaidHistory=function(){
+  showLoading("#modal-here");
+  $ajaxUtils.sendGetRequest(
+    raidHistoryLink,
+    buildHistoryView)
+};
+function buildHistoryView(history) {
+   $ajaxUtils.sendGetRequest(
+       historyModalHtml,
+       function (historyModalHtml) {
+         $ajaxUtils.sendGetRequest(
+         historyItemHtml,
+         function (historyItemHtml) {
+           var builtHistoryHtml = buildHistoryList(historyItemHtml,historyModalHtml,history);
+         document.querySelector("#modal-here").innerHTML = builtHistoryHtml;
+       },
+       false);
+       },
+      false)
+}
+function buildHistoryList(historyItemHtml,historyModalHtml,history){
+  historyViewHtml=historyModalHtml;
+  for(i=0; i<Object.keys(history).length; i++){
+      var html = historyItemHtml;
+      html =
+        insertProperty(html, "ID", history[i].ID);
+      html =
+        insertProperty(html, "Name", history[i].Name);
+      html =
+        insertProperty(html, "Date", history[i].Date);
+      html =
+        insertProperty(html, "Number", i);  
+      historyViewHtml =
+        insertProperty(historyViewHtml,"ListItems",html+"{{ListItems}}");
+
+  }
+  historyViewHtml = 
+    insertProperty(historyViewHtml,"ListItems","");
+  return historyViewHtml;
+
+};
+
+dc.selectRadio=function(clicked){
+  document.getElementById("modalHistorySubmitButton").disabled=false;
+  selectedHistoryButtonId=clicked.id;
+}
 //read uploaded CSV file
 dc.readFileInput = function(){ 
 readFile(document.getElementById('csvFileInputArea'));
@@ -90,11 +152,16 @@ function readFile(input) {
    
 };
 };
-
-dc.saveRaid=function(){
-saveRaidToFile();
-
+//load selected raid from history
+dc.openOldRaid=function(){
+   $ajaxUtils.sendGetRequest(
+    selectedRaidLink+document.getElementById("oldRaid"+selectedHistoryButtonId.replace("radioButton","")).innerHTML+".json",
+    loadOldRaid);
+};
+function loadOldRaid(raidJSON){
+  console.log(raidJSON);
 }
+
 //opening raid view once submit was clicked on Raid Builder
 dc.openRaid = function () {
   hide(".hideThis", false)
@@ -298,7 +365,7 @@ function csvJSON(csv){
 }
 
 //Get all needed data and save in JSON
-function saveRaidToFile(){
+dc.saveRaid=function(){
  var finalJson={}, raidTeams={},bench={};
   for(var i=0; i<document.querySelectorAll("#raidTeams>div.unhideThis").length;i++){
     var idForSel=document.querySelectorAll("#raidTeams>div.unhideThis")[i].id;
@@ -335,6 +402,7 @@ function saveRaidToFile(){
               "SortedRaids":raidTeams};
     saveToFile(finalJson,finalJson.RaidID+".json");
 
+
 $ajaxUtils.sendGetRequest(
   "../guild-manager/raidHistory/RHO Raid History.json",
   function (responseText) {
@@ -362,13 +430,16 @@ function saveToFile(data,name){
 global.$dc = dc;
 })(window);
 
-//clears Modal on close
+//clears Modals on close
 $("#importModal").on("hidden.bs.modal", function () {
+    if (document.getElementById("csvTextInputArea")===undefined) {
     document.getElementById("csvTextInputArea").value="";
     document.getElementById("csvTextInputArea").disabled=false;
     document.getElementById("csvFileInputArea").value="";
     document.getElementById("modalSubmitButton").disabled=true;
+    }
 });
+
 //disables Submit button on Modal until its ok to submit
 (function () {       
     $('#csvTextInputArea').bind('DOMAttrModified textInput input change keypress paste focus', function () {
@@ -377,6 +448,7 @@ $("#importModal").on("hidden.bs.modal", function () {
         }
     });
 }());
+
 
 /*!
  * jQuery UI Touch Punch 0.2.3

@@ -22,9 +22,13 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
 	 	<ul class="navbar-nav me-auto mb-2 mb-md-0">
-  			<li class="nav-item">
-    		<li><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#importModal">Raid Builder</a></li>
-  			</li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Raid Builder</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#importModal" onclick="$dc.modalNewRaid()">New Raid</a></li>
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#importModal" onclick="$dc.modalRaidHistory()">Raid History</a></li>
+          </ul>
+        </li>
   			<li class="nav-item">
      			<a class="nav-link" href="#">Crafting</a>
   			</li>
@@ -47,7 +51,7 @@
   <div class="container-fluid row">
   <section class="row col-6 col-md-12  justify-content-center hideThis order-2 order-md-1" id="raidTeams">
      <div class="col-sm-12 col-md hideThis" id="Raid1">
-      <ul  class="list-group droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
+      <ul  class="list-goup droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
         <lh><p>Raid 1</p> <span>0</span></lh>
       </ul>
       </div>
@@ -77,8 +81,6 @@
     <div class="col-sm-12 col-md-3 hideThis">
       <ul class="list-group droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-import" id="Tank">
         <lh>Tanks</lh>
-        <li class="list-group-item Tank Warrior Protection" data-toggle="tooltip" data-html="true" title="<em>{{Tooltip}}</em>" id="{{ID}}" ><span onclick="$dc.reSpec();">fefe</span>{{PlayerName}}</li>
-        <li class="list-group-item Tank Warrior Protection" data-toggle="tooltip" data-html="true" title="<em>{{Tooltip}}</em>" id="{{ID}}" ><span onclick="$dc.reSpec();">fafa</span>{{PlayerName}}</li>
       </ul>
     </div>
     <div class="col-sm-12 col-md-3 hideThis">
@@ -100,42 +102,8 @@
 </div>
   <!--Modal-->
 <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModal" aria-hidden="true">
-  <div class="modal-dialog" >
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="importModalLabel">Import your Raid Helper Event</h4>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-    <form>
-      <div class="form-group col-12">
-        <label for="csvTextInputArea">Paste in your Raid Helper CSV text here:</label>
-        <textarea class="form-control form-control-lg" id="csvTextInputArea" rows="6"></textarea>
-      </div>
-      <div id="csvFileInputAreaDiv" class="form-group col-12">
-        <label for="csvFileInputArea">Or upload the CSV file:</label>
-        <input type="file" class="form-control-file" id="csvFileInputArea" accept = ".csv" onchange="$dc.readFileInput();">
-      <hr class="d-sm-block"> 
-      </div>
-      <div class="row col-12">
-      <div class="form-group col-7 raidNumbersDiv">
-        <label for="numberOfRaids">Number of Raids:</label>
-        <input type="number" value="2" min="1" max="10" step="1" id="numberOfRaids" /><br>
-      </div>
-      <div  class="form-group col-5 raidNumbersDiv">
-        <label for="numberOfRaiders">Raid Size:</label>
-        <input type="number" value="25" min="10" max="40" step="15" id="numberOfRaiders" /><br>
-      </div>
-      </div>     
-  </form>
-      </div><!--/ModalBody-->
-      <div class="modal-footer"/>
-        <button type="button" class="btn btn-default" id="btnCloseModal" data-bs-dismiss="modal">Close</button>
-        <button type="button" disabled class="btn btn-primary" data-bs-dismiss="modal" id="modalSubmitButton"onclick="$dc.openRaid();" >Import</button>
-      </div>
-    </div>
+  <div class="modal-dialog" id="modal-here">
+    
   </div>
 </div>
 
