@@ -43,6 +43,8 @@
   </div>
   <a id="discord-login" class="nav-link" href="login.html" ><i class="fab fa-discord"></i> Log in with Discord</i></a>
 </nav>
+<button type="button" class="btn btn-primary hideThis"  id="editRaidButton"onclick="$dc.editRaid();" >Edit Raid</button>
+<button type="button" class="btn btn-primary hideThis"  id="saveRaidButton"onclick="$dc.saveRaid();" >Save Raid</button>
 	<!--navbar end-->
 	
 </header>
@@ -50,28 +52,28 @@
   <div id="main-content" class="container"></div> 
   <div class="container-fluid row">
   <section class="row col-6 col-md-12  justify-content-center hideThis order-2 order-md-1" id="raidTeams">
-     <div class="col-sm-12 col-md hideThis" id="Raid1">
-      <ul  class="list-goup droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
+     <div class="col-sm-12 col-md hideThis" >
+      <ul id="Raid1" class="list-group hideThis droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
         <lh><p>Raid 1</p> <span>0</span></lh>
       </ul>
       </div>
-      <div class="col-12 col-md hideThis"id="Raid2">
-      <ul  class="list-group droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
+      <div class="col-sm-12 col-md hideThis" >
+      <ul id="Raid2" class="list-group hideThis droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
         <lh><p>Raid 2</p> <span>0</span></lh>
       </ul>
       </div>
-      <div class="col-sm-12 col-md hideThis"id="Raid3">
-      <ul  class="list-group droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
+      <div class="col-sm-12 col-md hideThis">
+      <ul id="Raid3" class="list-group hideThis droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
         <lh><p>Raid 3</p> <span>0</span></lh>
       </ul>
       </div>
-      <div class="col-sm-12 col-md hideThis"id="Raid4">
-      <ul  class="list-group grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
+      <div class="col-sm-12 col-md hideThis">
+      <ul id="Raid4" class="list-group hideThis grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
         <lh><p>Raid 4</p> <span>0</span></lh>
       </ul>
       </div>
-      <div class="col-sm-12 col-md hideThis"id="Raid5">
-      <ul  class="list-group dropfalse grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
+      <div class="col-sm-12 col-md hideThis">
+      <ul id="Raid5" class="list-group hideThis dropfalse grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
         <lh><p>Raid 5</p><span>0</span></lh>
       </ul>
     </div>

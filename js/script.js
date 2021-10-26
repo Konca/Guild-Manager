@@ -18,9 +18,9 @@ var historyModalHtml = "snippets/importHistoryModal-snip.html"
 var historyItemHtml = "snippets/historyItem-snip.html"
 var raidHtml = "snippets/raidbuilder-snip.html";
 var raidLiHtml = "snippets/playerList-snip.html";
-var raidHistoryLink="../raidHistory/RHO Raid History.json"
-var selectedRaidLink="../raidHistory/"
-var raidObj,raidInfoObj,numOfRaids;
+var raidHistoryLink="raidHistory/RHO-Raid_History.json"
+var selectedRaidLink="raidHistory/"
+var raidObj,raidInfoObj,numOfRaids,editable=false;
 var selectedHistoryButtonId;
 var deleteThis=[];
 var categoriesTitleHtml = "snippets/categories-title-snippet.html";
@@ -54,6 +54,18 @@ function hide(hideSelector, willHide) {
         }
       }
     };
+//function to enable/disable dragging of given selector (true is enable, false is disable)
+function dragEnable(dragSelector, willDrag) { 
+  document.querySelectorAll(dragSelector).forEach(({ classList }) => classList.replace(unOrNo(willDrag)+"draggable", unOrNo(!willDrag)+"draggable"));
+  function unOrNo(willDrag){
+    if (willDrag) {
+      return "un";
+    }
+    else{
+      return "";
+    }
+  }
+};
     //function for deleting nodes based on the given selector
 function deleteNodes(delSelector){
   var len=document.querySelectorAll(delSelector).length;
@@ -157,23 +169,50 @@ dc.openOldRaid=function(){
    $ajaxUtils.sendGetRequest(
     selectedRaidLink+document.getElementById("oldRaid"+selectedHistoryButtonId.replace("radioButton","")).innerHTML+".json",
     loadOldRaid);
+    
 };
 function loadOldRaid(raidJSON){
-  console.log(raidJSON);
-}
+  deleteNodes(".connectedSortable>li");
+  editable=false;
+  var raidInfo={},raid={};
+  for(i=0; i<Object.keys(raidJSON).length; i++){
+    if(Object.keys(raidJSON)[i]==="SortedRaids")
+      raid[Object.keys(raidJSON)[i]]=raidJSON[Object.keys(raidJSON)[i]];
+    else
+      raidInfo[Object.keys(raidJSON)[i]] =raidJSON[Object.keys(raidJSON)[i]]; 
+  }  
+  hide(".hideThis", false)    
+  hide("#saveRaidButton",true);
+  let roleView = {"Tank":document.getElementById("Tank").innerHTML,
+                    "Healer":document.getElementById("Healer").innerHTML,
+                    "Melee-DPS":document.getElementById("Melee-DPS").innerHTML,
+                      "Ranged-DPS":document.getElementById("Ranged-DPS").innerHTML};
+
+    buildAndShowRaidItemsHTML(raid.SortedRaids[Object.keys(raid.SortedRaids).length-1].TeamComp, raidInfo, roleView,false);
+    for(var i=0; i<Object.keys(raid.SortedRaids).length-1; i++){
+    roleView= {}
+    roleView["Raid"+(i+1)]=document.getElementById("Raid"+(i+1)).innerHTML;
+    buildAndShowRaidItemsHTML(raid.SortedRaids[i].TeamComp,raidInfo, roleView,true)
+    };
+    for(var i=5; i>Object.keys(raid.SortedRaids).length-1;i--)
+    hide("#raidTeams>div:nth-child("+i+")",true);
+
+};
 
 //opening raid view once submit was clicked on Raid Builder
 dc.openRaid = function () {
   hide(".hideThis", false)
+  hide("#editRaidButton",true);
+  editable=true;
   deleteNodes(".connectedSortable>li");
   numOfRaids=document.getElementById("numberOfRaids").value;   
   for(var i=5; i>numOfRaids;i--)
-    hide("#Raid"+i,true);
+  hide("#raidTeams>div:nth-child("+i+")",true);
   
   const roleView = {"Tank":document.getElementById("Tank").innerHTML,
-                "Healer":document.getElementById("Healer").innerHTML,
-                "Melee-DPS":document.getElementById("Melee-DPS").innerHTML,
-                "Ranged-DPS":document.getElementById("Ranged-DPS").innerHTML};
+                    "Healer":document.getElementById("Healer").innerHTML,
+                    "Melee-DPS":document.getElementById("Melee-DPS").innerHTML,
+                    "Ranged-DPS":document.getElementById("Ranged-DPS").innerHTML};
   var importedCSV= document.getElementById("csvTextInputArea").value;
   raidSize= document.getElementById("numberOfRaiders").value;
   numOfRaids= document.getElementById("numberOfRaids").value;
@@ -193,12 +232,12 @@ dc.openRaid = function () {
     }
     raidObj.sort((c1, c2) => (c1.Spec < c2.Spec) ? 1 : (c1.Spec > c2.Spec) ? -1 : 0);
     raidObj.sort((c1, c2) => (c1.Class < c2.Class) ? 1 : (c1.Class > c2.Class) ? -1 : 0);
-    buildAndShowRaidItemsHTML(raidObj, raidInfoObj, roleView);
+    buildAndShowRaidItemsHTML(raidObj, raidInfoObj, roleView, false);
   }
 
 };
 
-function buildAndShowRaidItemsHTML (raid, raidInfo,roleView) {
+function buildAndShowRaidItemsHTML (raid, raidInfo,roleView,isSorted) {
   // Load raid title snippet
   $ajaxUtils.sendGetRequest(
     raidHtml,
@@ -213,46 +252,57 @@ function buildAndShowRaidItemsHTML (raid, raidInfo,roleView) {
    $ajaxUtils.sendGetRequest(
     raidLiHtml,
     function (raidLiHtml) {
-          roleView=buildRolePickerleHtml(roleView,raid,raidLiHtml);
+          roleView=buildRolePickerleHtml(roleView,raid,raidLiHtml,isSorted);
           for (var i = 0; i < Object.keys(roleView).length; i++) {
             insertHtml("#"+Object.keys(roleView)[i], roleView[Object.keys(roleView)[i]]);
-          }
-          
+          }       
+          dragEnable(".draggable",editable);
         },
         false);
 };
 
 function buildRaidsTitleHtml(raidInfo,raidHtml) {
   raidHtml = insertProperty(raidHtml, "Title", raidInfo.Name);
-  raidHtml = insertProperty(raidHtml, "ID", raidInfo.Link.split("/")[6]);
-  raidHtml = insertProperty(raidHtml, "Description", linkify(raidInfo.Description));
+  if(raidInfo.Link===undefined){
+    raidHtml = insertProperty(raidHtml, "ID", raidInfo.ID);
+    raidHtml = insertProperty(raidHtml, "Description", raidInfo.Description);
+  }
+  else{
+    raidHtml = insertProperty(raidHtml, "ID", raidInfo.Link.split("/")[6]);
+    raidHtml = insertProperty(raidHtml, "Description", linkify(raidInfo.Description));
+  }
   raidHtml = insertProperty(raidHtml, "Date", raidInfo.Date);
   raidHtml = insertProperty(raidHtml, "Time", raidInfo.Time);
 
    
      return raidHtml;
 };
-function buildRolePickerleHtml(role,raid,liHtml){
+function buildRolePickerleHtml(role,raid,liHtml,isSorted){
   // Loop over players
-
-  for (var i = 0; i < raid.length; i++) {
+  for (var i = 0; i < Object.keys(raid).length; i++) {
     // Insert item values
     var html = liHtml;
     html =
-      insertProperty(html, "Class", raid[i].Class.toLowerCase());
+      insertProperty(html, "Class", raid[i].Class);
     html =
-      insertProperty(html, "Spec", raid[i].Spec.toLowerCase());
+      insertProperty(html, "Spec", raid[i].Spec);
     html =
-      insertProperty(html, "Role", raid[i].Role.toLowerCase());
+      insertProperty(html, "Role", raid[i].Role);
     html =
-      insertProperty(html, "ID", raid[i].ID.toLowerCase());
+      insertProperty(html, "ID", raid[i].ID);
     html =
       insertProperty(html, "Tooltip", "Benched placeholder");
     html =
       insertProperty(html, "PlayerName", raid[i].Name);
-    role[raid[i].Role]= role[raid[i].Role]+html;
+      
+    if(isSorted==true){
+      role[Object.keys(role)[0]]= role[Object.keys(role)[0]]+html;
+    }
+    else
+      role[raid[i].Role.charAt(0).toUpperCase()+raid[i].Role.slice(1)]= role[raid[i].Role.charAt(0).toUpperCase()+raid[i].Role.slice(1)]+html;
 
   }
+  
   return role;
 };
 
@@ -363,26 +413,30 @@ function csvJSON(csv){
   //return result; //JavaScript object
   return JSON.stringify(result); //JSON
 }
-
+dc.editRaid=function(){
+  dragEnable(".undraggable",true)
+  hide("#editRaidButton",true);
+  hide("#saveRaidButton",false);
+}
 //Get all needed data and save in JSON
 dc.saveRaid=function(){
  var finalJson={}, raidTeams={},bench={};
-  for(var i=0; i<document.querySelectorAll("#raidTeams>div.unhideThis").length;i++){
-    var idForSel=document.querySelectorAll("#raidTeams>div.unhideThis")[i].id;
+  for(var i=0; i<document.querySelectorAll("#raidTeams>div.unhideThis>ul").length;i++){
+    var idForSel=document.querySelectorAll("#raidTeams>div.unhideThis>ul")[i].id;
     var comp={};
-    for(var j=0; j<document.querySelectorAll("#"+idForSel+">ul>li").length;j++){
-        comp[j]={"Role": document.querySelectorAll("#"+idForSel+">ul>li")[j].classList[1],
-                 "Class":document.querySelectorAll("#"+idForSel+">ul>li")[j].classList[2],
-                 "Spec":document.querySelectorAll("#"+idForSel+">ul>li")[j].classList[3],
-                 "Name":document.querySelectorAll("#"+idForSel+">ul>li")[j].innerText,
-                 "ID":document.querySelectorAll("#"+idForSel+">ul>li")[j].id
+    for(var j=0; j<document.querySelectorAll("#"+idForSel+">li").length;j++){
+        comp[j]={"Role": document.querySelectorAll("#"+idForSel+">li")[j].classList[1],
+                 "Class":document.querySelectorAll("#"+idForSel+">li")[j].classList[2],
+                 "Spec":document.querySelectorAll("#"+idForSel+">li")[j].classList[3],
+                 "Name":document.querySelectorAll("#"+idForSel+">li")[j].innerText,
+                 "ID":document.querySelectorAll("#"+idForSel+">li")[j].id
         }
     }
     raidTeams[i]={"TeamName":document.querySelectorAll("#raidTeams>div.unhideThis")[i].children[0].children[0].children[0].innerHTML,
               "TeamComp":comp};
        
   };
-   for(var i=0; i<document.querySelectorAll("#classPicker>div.unhideThis").length;i++){
+   for(var i=0; i<document.querySelectorAll("#classPicker>div.unhideThis>ul").length;i++){
     var idForSel=document.querySelectorAll("#classPicker>div.unhideThis>ul")[i].id;
     for(var j=0; j<document.querySelectorAll("#"+idForSel+">li").length;j++){
         bench[Object.keys(bench).length]={"Role": document.querySelectorAll("#"+idForSel+">li")[j].classList[1],
@@ -394,27 +448,36 @@ dc.saveRaid=function(){
   };
   raidTeams[Object.keys(raidTeams).length]={"TeamName":"Benched",
               "TeamComp":bench};
-    finalJson={"RaidName": document.querySelector("#raidTitle>h3").innerHTML,
-              "RaidID":document.querySelector("#raidTitle>h3").id,
+    finalJson={"Name": document.querySelector("#raidTitle>h3").innerHTML,
+              "ID":document.querySelector("#raidTitle>h3").id,
               "Description":document.querySelector("#raidTitle>p:nth-of-type(1n)").innerHTML,
               "Date":document.querySelector("#raidTitle>p:nth-of-type(2n)").innerHTML.split("&nbsp;")[1],
               "Time":document.querySelector("#raidTitle>p:nth-of-type(2n)").innerHTML.split("&nbsp;")[3],
               "SortedRaids":raidTeams};
-    saveToFile(finalJson,finalJson.RaidID+".json");
+    saveToFile(finalJson,finalJson.ID+".json");
 
 
 $ajaxUtils.sendGetRequest(
-  "../guild-manager/raidHistory/RHO Raid History.json",
+  "raidHistory/RHO-Raid_History.json",
   function (responseText) {
     var history={}
+    var newRaidData={"Name":finalJson.Name,
+                   "Date":finalJson.Date,
+                   "ID":finalJson.ID}
   if (responseText!==undefined){
-        history=responseText;
-    }
-  history[Object.keys(history).length]={"Name":finalJson.RaidName,
-                                          "Date":finalJson.Date,
-                                          "ID":finalJson.RaidID};                       
-    saveToFile(history,"RHO Raid History.json")
-    },
+        history=responseText;  
+        for(i=0; i<Object.keys(history).length; i++){
+          if (history[i].ID==finalJson.ID){
+               newRaidData={};
+        }}
+          
+  }
+  if(Object.keys(newRaidData).length!==0){
+  history[Object.keys(history).length]=newRaidData;                     
+  saveToFile(history,"RHO-Raid_History.json")
+  }
+  window.location = '/guild-manager/';
+  },
   true);
 
 };
@@ -482,7 +545,7 @@ $("#importModal").on("hidden.bs.modal", function () {
             }(jQuery);
 
 $(".sortable-list-import, .sortable-list-export").sortable({
-  items: "li",
+  items: "li.draggable",
 connectWith: ".connectedSortable",
  placeholder: "sortable-placeholder",
   receive: function(event, ui) {
@@ -490,7 +553,8 @@ connectWith: ".connectedSortable",
            if ( event.target.childElementCount-1 > raidSize ) {
             $(ui.sender).sortable('cancel');
         }else{
-              event.target.children[0].children[1].innerHTML=event.target.childElementCount-1;
+          for (var i = 0; i<uls.length;  i++) 
+            uls[i].querySelector("span").innerHTML=uls[i].getElementsByClassName("list-group-item").length;
 }},
   start: function(event, ui) {
         ui.placeholder.html(ui.item.html());
