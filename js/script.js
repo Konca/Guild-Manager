@@ -20,11 +20,9 @@ var raidHtml = "snippets/raidbuilder-snip.html";
 var raidLiHtml = "snippets/playerList-snip.html";
 var raidHistoryLink="raidHistory/RHO-Raid_History.json"
 var selectedRaidLink="raidHistory/"
-var raidObj,raidInfoObj,numOfRaids,editable=false;
+var raidObj,raidInfoObj,numOfRaids,editable=false,isReimport=false;
 var selectedHistoryButtonId;
 var deleteThis=[];
-var categoriesTitleHtml = "snippets/categories-title-snippet.html";
-var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 var showLoading = function (selector) {
   var html = "<div class='text-center'>";
   html += "<img src='images/ajax-loader.gif'></div>";
@@ -89,11 +87,21 @@ $ajaxUtils.sendGetRequest(
   false);   
 });
 
+dc.reimportCSV=function(){
+  $ajaxUtils.sendGetRequest(
+  newModalHtml,
+  function (responseText) {
+    document.querySelector("#modal-here").innerHTML = responseText;
+    hide("#modalSubmitButton",true)
+  },
+  false);
+};
 dc.modalNewRaid=function(){
   $ajaxUtils.sendGetRequest(
   newModalHtml,
   function (responseText) {
     document.querySelector("#modal-here").innerHTML = responseText;
+    hide("#modalReSubmitButton",true);
   },
   false);
 };
@@ -156,6 +164,7 @@ function readFile(input) {
     document.getElementById("csvTextInputArea").value = reader.result;
     document.getElementById("csvTextInputArea").disabled=true;
     document.getElementById("modalSubmitButton").disabled=false;
+    document.getElementById("modalReSubmitButton").disabled=false;
   };
 
   reader.onerror = function() {
@@ -183,6 +192,7 @@ function loadOldRaid(raidJSON){
   }  
   hide(".hideThis", false)    
   hide("#saveRaidButton",true);
+  hide("#reimportCSVButton",true);
   let roleView = {"Tank":document.getElementById("Tank").innerHTML,
                     "Healer":document.getElementById("Healer").innerHTML,
                     "Melee-DPS":document.getElementById("Melee-DPS").innerHTML,
@@ -194,7 +204,7 @@ function loadOldRaid(raidJSON){
     roleView["Raid"+(i+1)]=document.getElementById("Raid"+(i+1)).innerHTML;
     buildAndShowRaidItemsHTML(raid.SortedRaids[i].TeamComp,raidInfo, roleView,true)
     };
-    for(var i=5; i>Object.keys(raid.SortedRaids).length-1;i--)
+    for(var i=10; i>Object.keys(raid.SortedRaids).length-1;i--)
     hide("#raidTeams>div:nth-child("+i+")",true);
 
 };
@@ -203,10 +213,19 @@ function loadOldRaid(raidJSON){
 dc.openRaid = function () {
   hide(".hideThis", false)
   hide("#editRaidButton",true);
+  hide("#reimportCSVButton",true);
   editable=true;
   deleteNodes(".connectedSortable>li");
+  populateFromCSV(false);
+};
+dc.reOpenRaid=function(){
+  populateFromCSV(true);
+};
+
+function populateFromCSV(reimport){
+  isReimport=reimport;
   numOfRaids=document.getElementById("numberOfRaids").value;   
-  for(var i=5; i>numOfRaids;i--)
+  for(var i=10; i>numOfRaids;i--)
   hide("#raidTeams>div:nth-child("+i+")",true);
   
   const roleView = {"Tank":document.getElementById("Tank").innerHTML,
@@ -233,10 +252,37 @@ dc.openRaid = function () {
     raidObj.sort((c1, c2) => (c1.Spec < c2.Spec) ? 1 : (c1.Spec > c2.Spec) ? -1 : 0);
     raidObj.sort((c1, c2) => (c1.Class < c2.Class) ? 1 : (c1.Class > c2.Class) ? -1 : 0);
     buildAndShowRaidItemsHTML(raidObj, raidInfoObj, roleView, false);
+}
+}
+function deleteAfterReimport(){
+var sortedPlayers={};
+var unsortedPlayers={};
+var deletedUnsorted=[];
+  sortedPlayers=document.querySelectorAll("#raidTeams li");
+  unsortedPlayers=document.querySelectorAll("#classPicker li");
+  for(var i=0; i<Object.keys(sortedPlayers).length; i++){
+    var deleteSorted=true;
+      for(var j=0; j<Object.keys(unsortedPlayers).length; j++){
+        if(sortedPlayers[i].id==unsortedPlayers[j].id){
+          deleteNodes("#classPicker #"+unsortedPlayers[j].id);
+          deleteSorted=false;
+        }        
+      }
+      if(deleteSorted)
+      deleteNodes("#raidTeams #"+sortedPlayers[i].id);
   }
+  for(var j=0; j<Object.keys(unsortedPlayers).length; j++){
+  for(var k=0; k<Object.keys(unsortedPlayers).length; k++){
+    if(j!=k && unsortedPlayers[j].id==unsortedPlayers[k].id){
+      if(deletedUnsorted.indexOf(unsortedPlayers[k].id)==-1){
+      deletedUnsorted.push(unsortedPlayers[k].id);
+      document.querySelectorAll("#classPicker #"+unsortedPlayers[k].id)[0].parentNode.removeChild(document.querySelectorAll("#classPicker #"+unsortedPlayers[k].id)[0]);
+      }
+   }
+  }
+ }
 
 };
-
 function buildAndShowRaidItemsHTML (raid, raidInfo,roleView,isSorted) {
   // Load raid title snippet
   $ajaxUtils.sendGetRequest(
@@ -257,6 +303,11 @@ function buildAndShowRaidItemsHTML (raid, raidInfo,roleView,isSorted) {
             insertHtml("#"+Object.keys(roleView)[i], roleView[Object.keys(roleView)[i]]);
           }       
           dragEnable(".draggable",editable);
+          var uls=document.querySelectorAll("#raidTeams ul");
+          for (var i = 0; i<uls.length;  i++) 
+            uls[i].querySelector("span").innerHTML=uls[i].getElementsByClassName("list-group-item").length;
+            if(isReimport)
+              deleteAfterReimport();
         },
         false);
 };
@@ -264,7 +315,7 @@ function buildAndShowRaidItemsHTML (raid, raidInfo,roleView,isSorted) {
 function buildRaidsTitleHtml(raidInfo,raidHtml) {
   raidHtml = insertProperty(raidHtml, "Title", raidInfo.Name);
   if(raidInfo.Link===undefined){
-    raidHtml = insertProperty(raidHtml, "ID", raidInfo.ID);
+    raidHtml = insertProperty(raidHtml, "ID", "n"+raidInfo.ID);
     raidHtml = insertProperty(raidHtml, "Description", raidInfo.Description);
   }
   else{
@@ -289,7 +340,7 @@ function buildRolePickerleHtml(role,raid,liHtml,isSorted){
     html =
       insertProperty(html, "Role", raid[i].Role);
     html =
-      insertProperty(html, "ID", raid[i].ID);
+      insertProperty(html, "ID", "n"+raid[i].ID);
     html =
       insertProperty(html, "Tooltip", "Benched placeholder");
     html =
@@ -416,6 +467,7 @@ function csvJSON(csv){
 dc.editRaid=function(){
   dragEnable(".undraggable",true)
   hide("#editRaidButton",true);
+  hide("#reimportCSVButton",false);
   hide("#saveRaidButton",false);
 }
 //Get all needed data and save in JSON
@@ -429,7 +481,7 @@ dc.saveRaid=function(){
                  "Class":document.querySelectorAll("#"+idForSel+">li")[j].classList[2],
                  "Spec":document.querySelectorAll("#"+idForSel+">li")[j].classList[3],
                  "Name":document.querySelectorAll("#"+idForSel+">li")[j].innerText,
-                 "ID":document.querySelectorAll("#"+idForSel+">li")[j].id
+                 "ID":document.querySelectorAll("#"+idForSel+">li")[j].id.slice(1)
         }
     }
     raidTeams[i]={"TeamName":document.querySelectorAll("#raidTeams>div.unhideThis")[i].children[0].children[0].children[0].innerHTML,
@@ -443,13 +495,13 @@ dc.saveRaid=function(){
                  "Class":document.querySelectorAll("#"+idForSel+">li")[j].classList[2],
                  "Spec":document.querySelectorAll("#"+idForSel+">li")[j].classList[3],
                  "Name":document.querySelectorAll("#"+idForSel+">li")[j].innerText,
-                 "ID":document.querySelectorAll("#"+idForSel+">li")[j].id};
+                 "ID":document.querySelectorAll("#"+idForSel+">li")[j].id.slice(1)};
     }
   };
   raidTeams[Object.keys(raidTeams).length]={"TeamName":"Benched",
               "TeamComp":bench};
     finalJson={"Name": document.querySelector("#raidTitle>h3").innerHTML,
-              "ID":document.querySelector("#raidTitle>h3").id,
+              "ID":document.querySelector("#raidTitle>h3").id.slice(1),
               "Description":document.querySelector("#raidTitle>p:nth-of-type(1n)").innerHTML,
               "Date":document.querySelector("#raidTitle>p:nth-of-type(2n)").innerHTML.split("&nbsp;")[1],
               "Time":document.querySelector("#raidTitle>p:nth-of-type(2n)").innerHTML.split("&nbsp;")[3],
@@ -546,8 +598,8 @@ $("#importModal").on("hidden.bs.modal", function () {
 
 $(".sortable-list-import, .sortable-list-export").sortable({
   items: "li.draggable",
-connectWith: ".connectedSortable",
- placeholder: "sortable-placeholder",
+  connectWith: ".connectedSortable",
+  placeholder: "sortable-placeholder",
   receive: function(event, ui) {
            var uls=document.querySelectorAll("#raidTeams ul");
            if ( event.target.childElementCount-1 > raidSize ) {

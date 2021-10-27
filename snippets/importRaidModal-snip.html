@@ -2,8 +2,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title" >Import your Raid Helper Event</h4>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="close fas fa-window-close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true" ></span>
         </button>
       </div>
       <div class="modal-body">
@@ -29,9 +28,10 @@
       </div>     
   </form>
       </div><!--/ModalBody-->
-      <div class="modal-footer"/>
+      <div class="modal-footer">
         <button type="button" class="btn btn-default" id="btnCloseModal" data-bs-dismiss="modal">Close</button>
-        <button type="button" disabled class="btn btn-primary" data-bs-dismiss="modal" id="modalSubmitButton"onclick="$dc.openRaid();" >Import</button>
+        <button type="button" disabled class="btn btn-primary unhideThis" data-bs-dismiss="modal" id="modalSubmitButton"onclick="$dc.openRaid();" >Import</button>
+        <button type="button" disabled class="btn btn-primary unhideThis" data-bs-dismiss="modal" id="modalReSubmitButton"onclick="$dc.reOpenRaid();" >Import</button>
       </div>
     </div>
   </div>

@@ -5,12 +5,10 @@ h1, h2{
 	color: #FFFFFF;
 	text-align: center;
 }
-#saveRaidButton{
+#saveRaidButton, #editRaidButton, #reimportCSVButton{
 	float: right;
 }
-#editRaidButton{
-	float: right;
-}
+
 #discord-login{
 	display: none;
 	width: 260px;
@@ -51,10 +49,22 @@ line-height: 1.2em;
 	border: none;
 	font-size: 30px;
 }
-
+#plusminus{
+	position: relative;
+	float: left;
+	height: auto;
+}
+#plusminus>.fas{
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	font-size: 20px;
+}
+#plusminus>.fa-minus-square{
+	right: 25px;
+}
 form > div{
 	color: #FFFFFF;
-	display: inline-block;
 	float: left;
 	background-color: #3f3f3f;
 	border: 2px solid #000000;

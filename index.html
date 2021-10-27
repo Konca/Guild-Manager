@@ -45,6 +45,7 @@
 </nav>
 <button type="button" class="btn btn-primary hideThis"  id="editRaidButton"onclick="$dc.editRaid();" >Edit Raid</button>
 <button type="button" class="btn btn-primary hideThis"  id="saveRaidButton"onclick="$dc.saveRaid();" >Save Raid</button>
+<button type="button" class="btn btn-primary hideThis" data-bs-toggle="modal" data-bs-target="#importModal" id="reimportCSVButton"onclick="$dc.reimportCSV();" >Reimport CSV</button>
 	<!--navbar end-->
 	
 </header>
@@ -52,7 +53,7 @@
   <div id="main-content" class="container"></div> 
   <div class="container-fluid row">
   <section class="row col-6 col-md-12  justify-content-center hideThis order-2 order-md-1" id="raidTeams">
-     <div class="col-sm-12 col-md hideThis" >
+    <div class="col-sm-12 col-md hideThis" > 
       <ul id="Raid1" class="list-group hideThis droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
         <lh><p>Raid 1</p> <span>0</span></lh>
       </ul>
@@ -77,6 +78,31 @@
         <lh><p>Raid 5</p><span>0</span></lh>
       </ul>
     </div>
+    <div class="col-sm-12 col-md hideThis">
+      <ul id="Raid6" class="list-group hideThis dropfalse grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
+        <lh><p>Raid 6</p><span>0</span></lh>
+      </ul>
+    </div>
+    <div class="col-sm-12 col-md hideThis">
+      <ul id="Raid7" class="list-group hideThis dropfalse grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
+        <lh><p>Raid 7</p><span>0</span></lh>
+      </ul>
+    </div>
+    <div class="col-sm-12 col-md hideThis">
+      <ul id="Raid8" class="list-group hideThis dropfalse grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
+        <lh><p>Raid 8</p><span>0</span></lh>
+      </ul>
+    </div>
+    <div class="col-sm-12 col-md hideThis">
+      <ul id="Raid9" class="list-group hideThis dropfalse grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
+        <lh><p>Raid 9</p><span>0</span></lh>
+      </ul>
+    </div>
+    <div class="col-sm-12 col-md hideThis">
+    <ul id="Raid10" class="list-group hideThis dropfalse grey lighten-1 py-2 connectedSortable col-12 sortable-list-export">
+      <lh><p>Raid 10</p><span>0</span></lh>
+    </ul>
+  </div>
   </section>
  
 <section class="row col-6 col-md-12 justify-content-center hideThis order-1 order-md-2" id="classPicker">
