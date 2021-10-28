@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/mainstyle.css">
 </head>
 <body>
-  <header>
+  <header class="hideThis">
   	<!--navbar start-->
 <nav class="navbar navbar-expand-md navbar-dark">
   <div class="container">
@@ -50,7 +50,9 @@
 	
 </header>
 <main>
-  <div id="main-content" class="container"></div> 
+  <h1 class="display-1 hideThis">Guild Manager</h1>
+
+  <div id="main-content" class="container hideThis"></div> 
   <div class="container-fluid row">
   <section class="row col-6 col-md-12  justify-content-center hideThis order-2 order-md-1" id="raidTeams">
     <div class="col-sm-12 col-md hideThis" > 
@@ -106,6 +108,7 @@
   </section>
  
 <section class="row col-6 col-md-12 justify-content-center hideThis order-1 order-md-2" id="classPicker">
+    <h5 class="display-5 text-center hideThis">Benched</h5>
     <div class="col-sm-12 col-md-3 hideThis">
       <ul class="list-group droptrue grey lighten-1 py-2 connectedSortable col-12 sortable-list-import" id="Tank">
         <lh>Tanks</lh>
@@ -137,7 +140,7 @@
 
 </main>
 <!--FOOTER-->
-<footer id="footy" class="panel-footer">
+<footer id="footy" class="panel-footer hideThis">
     <div class="container">
       <div class="row">
         <section id="contact" class="col-md-4 col-sm-12">
@@ -166,7 +169,6 @@
 <script>$('#widget').draggable();</script>
 <script src="js/ajax-utils.js"></script>
 <script src="js/script.js"></script>
-
 </body>
 
 </html>

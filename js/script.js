@@ -18,8 +18,9 @@ var historyModalHtml = "snippets/importHistoryModal-snip.html"
 var historyItemHtml = "snippets/historyItem-snip.html"
 var raidHtml = "snippets/raidbuilder-snip.html";
 var raidLiHtml = "snippets/playerList-snip.html";
-var raidHistoryLink="raidHistory/RHO-Raid_History.json"
-var selectedRaidLink="raidHistory/"
+var raidHistoryLink="raidHistory/RHO-Raid_History.json";
+var selectedRaidLink="raidHistory/";
+var rosterLink="Roster/RHO.json";
 var raidObj,raidInfoObj,numOfRaids,editable=false,isReimport=false;
 var selectedHistoryButtonId;
 var deleteThis=[];
@@ -72,19 +73,32 @@ function deleteNodes(delSelector){
   }
 };
 
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
+}
 
 document.addEventListener("DOMContentLoaded", function (event) {
-
+if (getQueryVariable("id")===false){
 // On first load, show home view
 $ajaxUtils.sendGetRequest(
   homeHtml,
   function (responseText) {
     document.querySelector("#main-content")
-      .innerHTML = responseText;
-
-      deleteNodes(".connectedSortable>li");
+      .innerHTML = responseText;    
   },
   false);   
+  hide("header, footer, #main-content, h1",false)
+}
+else{
+  openPlannedRaidView(getQueryVariable("id"));
+}
 });
 
 dc.reimportCSV=function(){
@@ -149,6 +163,7 @@ function buildHistoryList(historyItemHtml,historyModalHtml,history){
 
 dc.selectRadio=function(clicked){
   document.getElementById("modalHistorySubmitButton").disabled=false;
+  document.getElementById("modalgetRaidLinkButton").disabled=false;
   selectedHistoryButtonId=clicked.id;
 }
 //read uploaded CSV file
@@ -178,6 +193,7 @@ dc.openOldRaid=function(){
    $ajaxUtils.sendGetRequest(
     selectedRaidLink+document.getElementById("oldRaid"+selectedHistoryButtonId.replace("radioButton","")).innerHTML+".json",
     loadOldRaid);
+    document.querySelector("h1").innerHTML="Raid Builder"
     
 };
 function loadOldRaid(raidJSON){
@@ -191,8 +207,7 @@ function loadOldRaid(raidJSON){
       raidInfo[Object.keys(raidJSON)[i]] =raidJSON[Object.keys(raidJSON)[i]]; 
   }  
   hide(".hideThis", false)    
-  hide("#saveRaidButton",true);
-  hide("#reimportCSVButton",true);
+  hide("#reimportCSVButton, #saveRaidButton",true);
   let roleView = {"Tank":document.getElementById("Tank").innerHTML,
                     "Healer":document.getElementById("Healer").innerHTML,
                     "Melee-DPS":document.getElementById("Melee-DPS").innerHTML,
@@ -206,14 +221,26 @@ function loadOldRaid(raidJSON){
     };
     for(var i=10; i>Object.keys(raid.SortedRaids).length-1;i--)
     hide("#raidTeams>div:nth-child("+i+")",true);
-
 };
 
+function openPlannedRaidView (raidID){
+  var asdf = selectedRaidLink+raidID+".json"
+$ajaxUtils.sendGetRequest(
+    asdf,function(asdf){
+      loadOldRaid(asdf);
+      hide("header, footer, h1",true)
+    });
+}
+
+dc.getRaidLink=function(){
+  hide("#linkForRaid",false)
+  document.getElementById("linkForRaid").value=window.location.href+"?id="+document.getElementById("oldRaid"+selectedHistoryButtonId.replace("radioButton","")).innerHTML;
+}
 //opening raid view once submit was clicked on Raid Builder
 dc.openRaid = function () {
+  document.querySelector("h1").innerHTML="Raid Builder"
   hide(".hideThis", false)
-  hide("#editRaidButton",true);
-  hide("#reimportCSVButton",true);
+  hide("#editRaidButton, #reimportCSVButton, h5",true);  
   editable=true;
   deleteNodes(".connectedSortable>li");
   populateFromCSV(false);
@@ -243,8 +270,11 @@ function populateFromCSV(reimport){
     showLoading("#main-content");
     raidInfoObj=JSON.parse(csvJSON(arrCSV[0]))[0];
     raidObj=JSON.parse(csvJSON(arrCSV[1]));
+    $ajaxUtils.sendGetRequest(
+      rosterLink,
+      function (rosterLink) {      
     for(var i=0; i<raidObj.length; i++){
-      formatRaidKeyVals(i, raidObj);
+      formatRaidKeyVals(i, raidObj,rosterLink);
     };
     for (var i = deleteThis.length-1; i>=0 ; i--) {
       raidObj.splice(deleteThis[i],1);
@@ -252,7 +282,7 @@ function populateFromCSV(reimport){
     raidObj.sort((c1, c2) => (c1.Spec < c2.Spec) ? 1 : (c1.Spec > c2.Spec) ? -1 : 0);
     raidObj.sort((c1, c2) => (c1.Class < c2.Class) ? 1 : (c1.Class > c2.Class) ? -1 : 0);
     buildAndShowRaidItemsHTML(raidObj, raidInfoObj, roleView, false);
-}
+})}
 }
 function deleteAfterReimport(){
 var sortedPlayers={};
@@ -308,6 +338,7 @@ function buildAndShowRaidItemsHTML (raid, raidInfo,roleView,isSorted) {
             uls[i].querySelector("span").innerHTML=uls[i].getElementsByClassName("list-group-item").length;
             if(isReimport)
               deleteAfterReimport();
+            
         },
         false);
 };
@@ -340,7 +371,11 @@ function buildRolePickerleHtml(role,raid,liHtml,isSorted){
     html =
       insertProperty(html, "Role", raid[i].Role);
     html =
+      insertProperty(html, "Status", raid[i].Status);
+    html =
       insertProperty(html, "ID", "n"+raid[i].ID);
+      html =
+      insertProperty(html, "GRank", raid[i].Rank);
     html =
       insertProperty(html, "Tooltip", "Benched placeholder");
     html =
@@ -368,81 +403,114 @@ function linkify(text) {
 
 
 //formats inputed CSV to required standard
-function formatRaidKeyVals(i,raid) {
+function formatRaidKeyVals(i,raid,roster) {
+
+  
   if (raid[i] === ""||raid[i] === undefined) {
     deleteThis.push(i);
   }
   else{
-    if (raid[i].Spec === "Protection") {
-        raid[i].Role = "Warrior";
-    }
-    else if (raid[i].Spec === "Protection1") {
-        raid[i].Spec = "Protection";
-        raid[i].Role = "Paladin";
-    }
-    else if (raid[i].Spec === "Guardian") {
-        raid[i].Role = "Druid";
-    }
-    else if (raid[i].Spec === "Holy") {
-        raid[i].Spec = "Holy";
-    }
-    else if (raid[i].Spec === "Holy1") {
-        raid[i].Spec = "Holy";
-    }
-    else if (raid[i].Spec === "Restoration") {
-        raid[i].Spec = "Restoration";
-    }
-    else if (raid[i].Spec === "Restoration1") {
-        raid[i].Spec = "Restoration";
-    }
-    else if (raid[i].Role === "Absence"||raid[i].Role === "") {
+    if(raid[i].ID!=undefined)
+      if(roster[raid[i].ID.slice(0,-3)]===undefined)
+        raid[i].Rank="Pug"
+      else
+        raid[i].Rank=roster[raid[i].ID.slice(0,-3)];
+    if (raid[i].Role === "Absence"||raid[i].Role === "") {
         deleteThis.push(i);
+    }
+    else if(raid[i].Role === "Tentative"||raid[i].Role ==="Late"||raid[i].Role ==="Bench"){
+      raid[i].Status=raid[i].Role;
+    }
+    else{
+      raid[i].Status="Signed";
     }
     switch (raid[i].Spec){
       case "Protection":
+        raid[i].Class="Warrior";
+        raid[i].Role="Tank";
+        break;
+      case "Protection1":
+        raid[i].Role = "Tank";
+        raid[i].Spec = "Protection";
+        raid[i].Class = "Paladin";
+        break;
       case "Guardian":
-      raid[i].Class=raid[i].Role;
-      raid[i].Role="Tank";
-
-      break;
-
-      case "Restoration":
+        raid[i].Class="Druid";
+        raid[i].Role="Tank";
+        break;
+       case "Restoration":
+          raid[i].Class="Druid";
+          raid[i].Role="Healer";
+          break;
+      case "Restoration1":
+        raid[i].Spec="Restoration";
+        raid[i].Class="Shaman";
+        raid[i].Role="Healer";
+        break;
       case "Holy":
       case "Discipline":
-      raid[i].Class=raid[i].Role;
-      raid[i].Role="Healer";
-
-      break;
-
+        raid[i].Class="Priest";
+        raid[i].Role="Healer";
+        break;
+      case "Holy1":
+          raid[i].Spec = "Holy";
+          raid[i].Class="Paladin";
+          raid[i].Role="Healer";
+          break;
       case "Arms":
       case "Fury":
+        raid[i].Class="Warrior";
+        raid[i].Role="Melee-DPS";
+        break;
       case "Feral":
+        raid[i].Class="Druid";
+        raid[i].Role="Melee-DPS";
+        break;
       case "Retribution":
+        raid[i].Class="Paladin";
+        raid[i].Role="Melee-DPS";
+        break;
       case "Combat":
       case "Assassination":
       case "Subtlety":
+        raid[i].Class="Rogue";
+        raid[i].Role="Melee-DPS";
+        break;
       case "Enhancement":
-      raid[i].Class=raid[i].Role;
-      raid[i].Role="Melee-DPS";
-
-      break;
+        raid[i].Class="Shaman";
+        raid[i].Role="Melee-DPS";
+        break;
 
       case "Balance":
+        raid[i].Class="Druid";
+        raid[i].Role="Ranged-DPS";
+        break;
       case "Beastmastery":
       case "Marksmanship":
       case "Survival":
+        raid[i].Class="Hunter";
+        raid[i].Role="Ranged-DPS";
+        break;
       case "Shadow":
+        raid[i].Class="Priest";
+        raid[i].Role="Ranged-DPS";
+        break;
       case "Fire":
       case "Arcane":
       case "Frost":
+        raid[i].Class="Mage";
+        raid[i].Role="Ranged-DPS";
+        break;
       case "Destruction":
       case "Demonology":
       case "Affliction":
+        raid[i].Class="Warlock";
+        raid[i].Role="Ranged-DPS";
+        break;
       case "Elemental":
-      raid[i].Class=raid[i].Role;
-      raid[i].Role="Ranged-DPS";
-
-      break;
+        raid[i].Class="Shaman";
+        raid[i].Role="Ranged-DPS";
+        break;
     }
     
 }
@@ -480,6 +548,8 @@ dc.saveRaid=function(){
         comp[j]={"Role": document.querySelectorAll("#"+idForSel+">li")[j].classList[1],
                  "Class":document.querySelectorAll("#"+idForSel+">li")[j].classList[2],
                  "Spec":document.querySelectorAll("#"+idForSel+">li")[j].classList[3],
+                 "Status":document.querySelectorAll("#"+idForSel+">li")[j].classList[4],
+                 "Rank":document.querySelectorAll("#"+idForSel+">li")[j].classList[5],
                  "Name":document.querySelectorAll("#"+idForSel+">li")[j].innerText,
                  "ID":document.querySelectorAll("#"+idForSel+">li")[j].id.slice(1)
         }
@@ -494,6 +564,7 @@ dc.saveRaid=function(){
         bench[Object.keys(bench).length]={"Role": document.querySelectorAll("#"+idForSel+">li")[j].classList[1],
                  "Class":document.querySelectorAll("#"+idForSel+">li")[j].classList[2],
                  "Spec":document.querySelectorAll("#"+idForSel+">li")[j].classList[3],
+                 "Status":document.querySelectorAll("#"+idForSel+">li")[j].classList[4],
                  "Name":document.querySelectorAll("#"+idForSel+">li")[j].innerText,
                  "ID":document.querySelectorAll("#"+idForSel+">li")[j].id.slice(1)};
     }
@@ -552,6 +623,7 @@ $("#importModal").on("hidden.bs.modal", function () {
     document.getElementById("csvTextInputArea").disabled=false;
     document.getElementById("csvFileInputArea").value="";
     document.getElementById("modalSubmitButton").disabled=true;
+    document.getElementById("modalReSubmitButton").disabled=true;
     }
 });
 

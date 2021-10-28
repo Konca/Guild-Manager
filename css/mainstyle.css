@@ -113,7 +113,7 @@ lh{
 	padding: 0 0 8px 0;
 
 }
-lh>span{
+lh> span{
 	position: absolute;
 	margin: -6px 2px;
 	width: 20px;
@@ -124,7 +124,7 @@ lh>span{
 lh>p{
 	display: inline;
 }
-li>span {
+li> span {
     vertical-align:middle;
     display:inline-block;
     background-size: 30px;
@@ -146,93 +146,139 @@ input[type="number"]::-webkit-number-input{
 	text-decoration: none !important;
 }
 .hideThis{
-	display: none;
+	display: none !important;
 }
 
+li.Tentative>span.statusIcon{
+	margin-left: 5px;
+	border-radius: 5px;
+	background-image: url("../images/scale.png") ;
+}
+li.Bench>span.statusIcon{
+	margin-left: 5px;
+	border-radius: 5px;
+	background-image: url("../images/bench.png") ;
+}
+li.Late>span.statusIcon{
+	margin-left: 5px;
+	border-radius: 5px;
+	background-image: url("../images/late.png") ;
+}
+
+li.Pug>span.rankIcon{
+	margin-left: 5px;
+	border-radius: 15px;
+	background-image: url("../images/pug.png") ;
+}
+li.Riled-Rookie>span.rankIcon{
+	margin-left: 5px;
+	border-radius: 15px;
+	background-image: url("../images/rookie.png") ;
+}
+li.Sulky-Social>span.rankIcon{
+	margin-left: 5px;
+	border-radius: 15px;
+	background-image: url("../images/social.png") ;
+}
+li.Veteran>span.rankIcon{
+	margin-left: 5px;
+	border-radius: 15px;
+	background-image: url("../images/vet.png") ;
+}
+li.Enraged-Officer>span.rankIcon{
+	margin-left: 5px;
+	border-radius: 15px;
+	background-image: url("../images/offi.png") ;
+}
+.rankIcon, .statusIcon{
+	height: 20px;
+	width: 20px;
+	background-size: 20px;
+}
 /*SPEC ICON PICKER*/
 
-li.Druid.Balance>span{
+li.Druid.Balance>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/druid/balance.png") ;
 }
-li.Druid.Feral>span{
+li.Druid.Feral>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/druid/feral.png") ;
 }
-li.Druid.Guardian>span{
+li.Druid.Guardian>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/druid/guardian.png") ;
 }
-li.Druid.Restoration>span{
+li.Druid.Restoration>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/druid/restoration.png") ;
 }
-li.Hunter.Beastmastery>span{
+li.Hunter.Beastmastery>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/hunter/beastmastery.png") ;
 }
-li.Hunter.Marksman>span{
+li.Hunter.Marksman>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/hunter/marksman.png") ;
 }
-li.Hunter.Survival>span{
+li.Hunter.Survival>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/hunter/survival.png") ;
 }
-li.Mage.Arcane>span{
+li.Mage.Arcane>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/mage/arcane.png") ;
 }
-li.Mage.Fire>span{
+li.Mage.Fire>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/mage/fire.png") ;
 }
-li.Mage.Frost>span{
+li.Mage.Frost>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/mage/frost.png") ;
 }
-li.Paladin.Holy>span{
+li.Paladin.Holy>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/paladin/holy.png") ;
 }
-li.Paladin.Protection>span{
+li.Paladin.Protection>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/paladin/protection.png") ;
 }
-li.Paladin.Retribution>span{
+li.Paladin.Retribution>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/paladin/retribution.png") ;
 }
-li.Priest.Discipline>span{
+li.Priest.Discipline>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/priest/discipline.png") ;
 }
-li.Priest.Holy>span{
+li.Priest.Holy>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/priest/holy.png") ;
 }
-li.Priest.Shadow>span{
+li.Priest.Shadow>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/priest/shadow.png") ;
 }
-li.Rogue.Assassination>span{
+li.Rogue.Assassination>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/rogue/assassination.png") ;
 }
-li.Rogue.Combat>span{
+li.Rogue.Combat>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/rogue/combat.png") ;
 }
-li.Rogue.Subtlety>span{
+li.Rogue.Subtlety>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/rogue/subtlety.png") ;
 }
-li.Shaman.Elemental>span{
+li.Shaman.Elemental>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/shaman/elemental.png") ;
 }
-li.Shaman.Enhancement>span{
+li.Shaman.Enhancement>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/shaman/enhancement.png") ;
 }
-li.Shaman.Restoration>span{
+li.Shaman.Restoration>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/shaman/restoration.png") ;
 }
-li.Warlock.Affliction>span{
+li.Warlock.Affliction>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/warlock/affliction.png") ;
 }
-li.Warlock.Demonology>span{
+li.Warlock.Demonology>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/warlock/demonology.png") ;
 }
-li.Warlock.Destruction>span{
+li.Warlock.Destruction>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/warlock/destruction.png") ;
 }
-li.Warrior.Arms>span{
+li.Warrior.Arms>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/warrior/arms.png") ;
 }
-li.Warrior.Fury>span{
+li.Warrior.Fury>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/warrior/fury.png") ;
 }
-li.Warrior.Protection>span{
+li.Warrior.Protection>span.classIcon{
 	background-image: url("../images/Wow-Icons/images/spec/warrior/protection.png") ;
 }
 
@@ -314,7 +360,7 @@ footer, header nav, .dropdown-menu, .dropdown-item{
 	padding: 0;
 }
 
-li>span {
+li> span {
     background-size: 20px;
   	width: 20px;
   	height:20px;
